@@ -54,7 +54,6 @@ def crear_usuario(request):
         return redirect('gestion_usuarios')  # Cambia esto según tu vista principal
     
 
-
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -64,19 +63,26 @@ def login_view(request):
             user = authenticate(request, username=usuario, password=password)
 
             if user is not None:
-                login(request, user)  # <- LOGIN SIEMPRE QUE SEA VÁLIDO
-                
+                login(request, user)
+
                 if user.is_staff:
-                    return redirect('dashboard')  # vista del admin
+                   return redirect('dashboard:dashboard')
+
                 else:
-                    return redirect('index')   # vista del usuario normal
+                    return redirect('index')
             else:
                 error_message = "Datos inválidos"
-                return render(request, 'login.html', {'form': form, 'error_message': error_message})
+                return render(request, 'core/login.html', {  # ← CORREGIDO
+                    'form': form,
+                    'error_message': error_message
+                })
     else:
         form = LoginForm()
 
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'core/login.html', {'form': form})
+
+
+
 
 def logout_view(request):
     logout(request)
